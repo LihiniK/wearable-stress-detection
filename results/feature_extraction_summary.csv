@@ -1,0 +1,8 @@
+item,value
+total_windows,2151
+total_columns,75
+number_of_feature_columns,68
+signals_used,"ECG, EDA, Resp, Temp"
+windows_Neutral / Baseline,1154
+windows_Stress,644
+windows_Amusement,353
