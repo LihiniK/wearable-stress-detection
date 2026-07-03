@@ -1,0 +1,23 @@
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter checkpoint files
+.ipynb_checkpoints/
+
+# Dataset files
+data/WESAD/
+data/*.zip
+
+# Model files
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.pt
+
+# OS files
+.DS_Store
+Thumbs.db
