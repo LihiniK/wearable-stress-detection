@@ -1,0 +1,11 @@
+item,value
+sampling_rate_hz,700
+window_size_seconds,30
+overlap,0.5
+step_size_seconds,15.0
+number_of_signals,4
+signals_used,"ECG, EDA, Resp, Temp"
+total_windows,2151
+windows_Neutral / Baseline,1154
+windows_Stress,644
+windows_Amusement,353

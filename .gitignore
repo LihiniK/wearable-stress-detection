@@ -12,6 +12,9 @@ __pycache__/
 data/WESAD/
 data/*.zip
 
+# Processed data
+data/processed/
+
 # Model files
 models/*.pkl
 models/*.joblib
