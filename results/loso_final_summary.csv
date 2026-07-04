@@ -1,0 +1,2 @@
+best_model,mean_accuracy,std_accuracy,mean_macro_f1,std_macro_f1,number_of_subjects,number_of_windows,number_of_features
+Gradient Boosting,0.6870855165380209,0.16374951015055708,0.5768525041449593,0.18050628944526187,15,2151,68

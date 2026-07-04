@@ -1,0 +1,2 @@
+model,accuracy,macro_precision,macro_recall,macro_f1,best_validation_macro_f1,epochs_trained,batch_size,number_of_features,training_samples,validation_samples,testing_samples,training_subjects,validation_subjects,testing_subjects
+Feature-Based MLP,0.46420323325635104,0.4636251274702286,0.409002109002109,0.4273665107587779,0.4982516466582905,16,32,68,1289,429,433,"S13, S14, S15, S16, S17, S2, S3, S5, S9","S11, S7, S8","S10, S4, S6"
