@@ -1,0 +1,2 @@
+model,accuracy,macro_precision,macro_recall,macro_f1,epochs,batch_size,downsample_factor,input_channels,input_time_steps,training_samples,testing_samples,training_subjects,testing_subjects
+1D CNN,0.3787528868360277,0.39302971232795797,0.3793373293373294,0.35842947746005743,25,32,10,4,2100,1718,433,"S11, S13, S14, S15, S16, S17, S2, S3, S5, S7, S8, S9","S10, S4, S6"
