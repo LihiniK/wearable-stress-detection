@@ -1,0 +1,9 @@
+item,value
+training_samples,1718
+testing_samples,433
+number_of_features,68
+training_subjects,"S11, S13, S14, S15, S16, S17, S2, S3, S5, S7, S8, S9"
+testing_subjects,"S10, S4, S6"
+best_model,Gradient Boosting
+best_accuracy,0.7066974595842956
+best_macro_f1,0.5774750672990856

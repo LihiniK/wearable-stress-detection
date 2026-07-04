@@ -1,0 +1,11 @@
+Best model: Gradient Boosting
+
+                    precision    recall  f1-score   support
+
+Neutral / Baseline       0.69      0.97      0.80       231
+            Stress       0.97      0.53      0.69       130
+         Amusement       0.37      0.18      0.24        72
+
+          accuracy                           0.71       433
+         macro avg       0.68      0.56      0.58       433
+      weighted avg       0.72      0.71      0.67       433
