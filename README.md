@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project develops a complete machine learning and deep learning pipeline for wearable stress detection using physiological signals from the WESAD dataset.
+This project develops a machine learning and deep learning pipeline for wearable stress detection using physiological signals from the WESAD dataset.
 
 The goal is to classify physiological signal windows into three affective states:
 
@@ -10,29 +10,22 @@ The goal is to classify physiological signal windows into three affective states
 - Stress
 - Amusement
 
-The project includes raw signal exploration, preprocessing, window segmentation, feature extraction, classical machine learning, raw-signal deep learning, feature-based deep learning, Leave-One-Subject-Out cross-validation, and an interactive Streamlit application.
+The project includes signal preprocessing, window segmentation, feature extraction, classical machine learning, deep learning, Leave-One-Subject-Out evaluation, and an interactive Streamlit app.
 
 ---
 
 ## Live Demo
 
-An interactive Streamlit application is included for project demonstration.
+[Open the Streamlit App](https://wearable-stress-detection-v1.streamlit.app)
 
-Add your deployed app link here:
-
-```text
-https://wearable-stress-detection-v1.streamlit.app
-```
-
-The app provides:
+The app includes:
 
 - Project overview
 - Model comparison dashboard
 - Leave-One-Subject-Out evaluation results
 - Batch prediction using uploaded feature CSV files
-- Prediction probability outputs
+- Prediction probabilities
 - Downloadable prediction results
-- Example input CSV for testing
 
 ---
 
@@ -40,18 +33,20 @@ The app provides:
 
 This project uses the **WESAD: Wearable Stress and Affect Detection** dataset.
 
-The dataset contains physiological and motion sensor data collected from wearable devices during a laboratory-based stress and affect study.
-
-Signals used in this project:
+Signals used:
 
 - ECG
 - EDA / GSR
 - Respiration
 - Temperature
 
-The dataset is not included in this repository because of its size. Users should download the dataset manually from the official WESAD source and place it inside the `data/` folder.
+The dataset is not included in this repository because of its size. Users should download it manually and place it inside:
 
-Expected local dataset structure:
+```text
+data/WESAD/
+```
+
+Expected structure:
 
 ```text
 data/
@@ -60,72 +55,16 @@ data/
     │   └── S2.pkl
     ├── S3/
     │   └── S3.pkl
-    ├── S4/
-    │   └── S4.pkl
     └── ...
 ```
 
 ---
 
-## Project Objectives
-
-The main objectives of this project are:
-
-- Load and explore physiological signals from the WESAD dataset
-- Visualize ECG, EDA, respiration, and temperature signals
-- Segment continuous time-series signals into fixed-size windows
-- Extract statistical and signal-change features
-- Train classical machine learning models
-- Train raw-signal deep learning models
-- Train feature-based neural networks
-- Evaluate models using subject-independent testing
-- Perform Leave-One-Subject-Out cross-validation
-- Export the final model for deployment
-- Build an interactive Streamlit application
-- Compare classical ML and deep learning approaches
-
----
-
-## Classes
-
-The following WESAD labels are used:
-
-| Label | Class |
-|---:|---|
-| 1 | Neutral / Baseline |
-| 2 | Stress |
-| 3 | Amusement |
-
-The following labels are excluded:
-
-| Label | Reason |
-|---:|---|
-| 0 | Undefined / transition |
-| 4 | Meditation / not used in this project |
-
----
-
 ## Methodology
 
-### 1. Data Exploration
+### 1. Window Segmentation
 
-The first notebook loads one subject and explores the structure of the WESAD dataset.
-
-Explored components:
-
-- Dataset dictionary structure
-- Chest sensor signals
-- Wrist sensor signals
-- Label distribution
-- Raw ECG, EDA, respiration, and temperature plots
-
----
-
-### 2. Window Segmentation
-
-The continuous physiological signals are divided into fixed-size windows.
-
-Windowing configuration:
+Continuous physiological signals were segmented into fixed-size windows.
 
 | Parameter | Value |
 |---|---:|
@@ -136,35 +75,38 @@ Windowing configuration:
 | Step size | 15 seconds |
 | Signals used | ECG, EDA, Respiration, Temperature |
 
-A majority-label strategy is used to assign one label to each window. Windows with unclear or mixed labels are removed using a majority-ratio threshold.
+Only the following labels were used:
+
+| Label | Class |
+|---:|---|
+| 1 | Neutral / Baseline |
+| 2 | Stress |
+| 3 | Amusement |
+
+Labels `0` and `4` were excluded.
 
 ---
 
-### 3. Feature Extraction
+### 2. Feature Extraction
 
-For each 30-second window, statistical and signal-change features are extracted from each physiological signal.
+For each 30-second window, statistical and signal-change features were extracted.
 
-Extracted feature types include:
+Feature examples:
 
 - Mean
 - Standard deviation
-- Minimum
-- Maximum
+- Minimum and maximum
 - Median
 - Range
-- 25th percentile
-- 75th percentile
 - Interquartile range
 - RMS
 - Energy
 - Mean absolute change
-- Standard deviation of change
-- Maximum absolute change
 - Zero crossings
 - Skewness
 - Kurtosis
 
-The final feature dataset contains:
+Final feature dataset:
 
 | Item | Value |
 |---|---:|
@@ -176,56 +118,28 @@ The final feature dataset contains:
 
 ## Models
 
-This project compares both classical machine learning and deep learning models.
-
-### Classical Machine Learning Models
+### Classical Machine Learning
 
 - Logistic Regression
 - Random Forest
 - Support Vector Machine
 - Gradient Boosting
 
-### Deep Learning Models
+### Deep Learning
 
-- 1D CNN using raw physiological signal windows
-- CNN-GRU using raw physiological signal windows
-- Feature-Based MLP using extracted physiological features
+- 1D CNN
+- CNN-GRU
+- Feature-Based MLP
 
 ### Final Deployment Model
 
-The final model used in the Streamlit application is:
+The deployed Streamlit app uses:
 
 ```text
 Gradient Boosting
 ```
 
-This model was selected because it achieved the best overall subject-independent performance.
-
----
-
-## Evaluation Strategy
-
-Two evaluation strategies are used.
-
-### 1. Subject-Independent Train/Test Split
-
-The data is split by subject, meaning test subjects are not seen during training.
-
-This is more realistic than random window splitting because the model must generalize to unseen people.
-
----
-
-### 2. Leave-One-Subject-Out Cross-Validation
-
-Leave-One-Subject-Out, or LOSO, is used for stricter subject-independent evaluation.
-
-In each fold:
-
-- One subject is used as the test subject
-- All remaining subjects are used for training
-- The process is repeated until every subject has been used once as the test subject
-
-This gives a stronger estimate of how well the model generalizes to new users.
+This model was selected because it achieved the best subject-independent performance.
 
 ---
 
@@ -253,14 +167,13 @@ The best model in the single split experiment was **Gradient Boosting**.
 | Random Forest | 0.6897 | 0.1128 | 0.5037 | 0.1354 |
 | Logistic Regression | 0.5896 | 0.1986 | 0.4948 | 0.1648 |
 
-The best LOSO model was **Gradient Boosting**, with:
+Best LOSO model:
 
 | Metric | Value |
 |---|---:|
+| Model | Gradient Boosting |
 | Mean Accuracy | 0.6871 |
-| Standard Deviation Accuracy | 0.1638 |
 | Mean Macro F1 | 0.5769 |
-| Standard Deviation Macro F1 | 0.1805 |
 | Number of subjects | 15 |
 | Number of windows | 2151 |
 | Number of features | 68 |
@@ -269,23 +182,13 @@ The best LOSO model was **Gradient Boosting**, with:
 
 ## Key Finding
 
-Classical machine learning with handcrafted physiological features outperformed raw-signal deep learning models in this project.
+Classical machine learning with handcrafted physiological features outperformed raw-signal deep learning models.
 
-The results suggest that for small wearable physiological datasets, feature engineering remains highly effective, especially when subject-independent generalization is required.
-
-Although the deep learning models improved from the initial 1D CNN to CNN-GRU and Feature-Based MLP, they did not outperform Gradient Boosting.
+This suggests that feature engineering remains highly effective for small wearable physiological datasets, especially when evaluating generalization to unseen subjects.
 
 ---
 
 ## Result Visualizations
-
-### Feature Class Distribution
-
-![Feature Class Distribution](results/feature_class_distribution.png)
-
-### Classical ML Model Comparison
-
-![ML Model Comparison](results/ml_model_comparison_macro_f1.png)
 
 ### All Model Comparison
 
@@ -303,27 +206,15 @@ Although the deep learning models improved from the initial 1D CNN to CNN-GRU an
 
 ## Streamlit App
 
-An advanced Streamlit application is included in the `app/` folder.
-
-The app includes:
-
-- Overview page
-- Results dashboard
-- Model comparison visualization
-- LOSO evaluation summary
-- Batch prediction interface
-- Feature input template download
-- Example input CSV download
-- Prediction probability output
-- Downloadable prediction results
-- Model metadata page
-
-### App Files
+The Streamlit app is located in:
 
 ```text
-app/
-└── streamlit_app.py
+app/streamlit_app.py
+```
 
+Required app artifacts:
+
+```text
 app_artifacts/
 ├── stress_model.joblib
 ├── feature_columns.json
@@ -332,19 +223,11 @@ app_artifacts/
 └── example_feature_input.csv
 ```
 
-### Run the Streamlit App Locally
+Run locally:
 
 ```bash
 streamlit run app/streamlit_app.py
 ```
-
-Before running the app, execute:
-
-```text
-notebooks/09_export_final_model_for_streamlit.ipynb
-```
-
-This notebook creates the required files inside the `app_artifacts/` folder.
 
 ---
 
@@ -368,7 +251,6 @@ wearable-stress-detection/
 │   └── example_feature_input.csv
 │
 ├── data/
-│   ├── README.md
 │   ├── WESAD/              # Not uploaded to GitHub
 │   └── processed/          # Not uploaded to GitHub
 │
@@ -384,36 +266,11 @@ wearable-stress-detection/
 │   └── 09_export_final_model_for_streamlit.ipynb
 │
 ├── results/
-│   ├── preprocessing_summary.csv
-│   ├── feature_extraction_summary.csv
-│   ├── ml_model_comparison.csv
-│   ├── dl_summary.csv
-│   ├── improved_dl_summary.csv
-│   ├── feature_mlp_summary.csv
-│   ├── all_model_comparison.csv
-│   ├── loso_model_summary.csv
-│   ├── loso_final_summary.csv
-│   └── figures and reports
+│   └── result CSV files, figures, and reports
 │
 └── models/
-    └── trained model files       # Not uploaded to GitHub
+    └── local trained model files
 ```
-
----
-
-## Notebooks
-
-| Notebook | Description |
-|---|---|
-| `01_data_exploration.ipynb` | Loads and explores one WESAD subject, plots raw signals and labels |
-| `02_preprocessing_window_segmentation.ipynb` | Segments continuous signals into 30-second windows |
-| `03_feature_extraction.ipynb` | Extracts statistical and signal-change features |
-| `04_machine_learning_models.ipynb` | Trains classical ML models |
-| `05_deep_learning_models.ipynb` | Trains a raw-signal 1D CNN |
-| `06_improved_deep_learning_models.ipynb` | Trains an improved CNN-GRU model |
-| `07_feature_based_neural_network.ipynb` | Trains a feature-based MLP neural network |
-| `08_leave_one_subject_out_evaluation.ipynb` | Performs LOSO cross-validation |
-| `09_export_final_model_for_streamlit.ipynb` | Exports final Gradient Boosting model and app artifacts |
 
 ---
 
@@ -426,25 +283,21 @@ git clone https://github.com/LihiniK/wearable-stress-detection.git
 cd wearable-stress-detection
 ```
 
----
-
 ### 2. Create a Virtual Environment
 
-On Windows PowerShell:
+Windows PowerShell:
 
 ```powershell
 python -m venv venv
 .\venv\Scripts\activate
 ```
 
-On macOS or Linux:
+macOS / Linux:
 
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
-
----
 
 ### 3. Install Requirements
 
@@ -452,32 +305,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
----
-
 ### 4. Download the Dataset
 
-Download the WESAD dataset manually from the official source.
-
-Place the extracted dataset inside:
+Download the WESAD dataset manually and place it inside:
 
 ```text
 data/WESAD/
 ```
 
-The expected structure is:
+### 5. Run the Notebooks
 
-```text
-data/WESAD/S2/S2.pkl
-data/WESAD/S3/S3.pkl
-data/WESAD/S4/S4.pkl
-...
-```
-
----
-
-### 5. Run Notebooks in Order
-
-Run the notebooks in this order:
+Run notebooks in order:
 
 ```text
 01_data_exploration.ipynb
@@ -491,56 +329,17 @@ Run the notebooks in this order:
 09_export_final_model_for_streamlit.ipynb
 ```
 
-The processed data files and trained development models are created locally and are not uploaded to GitHub.
-
----
-
 ### 6. Run the Streamlit App
-
-After running Notebook 09, start the app:
 
 ```bash
 streamlit run app/streamlit_app.py
 ```
 
-The app will open in a browser at:
-
-```text
-http://localhost:8501
-```
-
 ---
 
-## Streamlit Deployment Notes
+## Important Notes
 
-This app can be deployed using Streamlit Community Cloud.
-
-Deployment settings:
-
-| Setting | Value |
-|---|---|
-| Repository | `LihiniK/wearable-stress-detection` |
-| Branch | `main` |
-| Main file path | `app/streamlit_app.py` |
-| Recommended Python version | `3.10` or `3.11` |
-
-The following files must be available in GitHub for deployment:
-
-```text
-app/streamlit_app.py
-app_artifacts/stress_model.joblib
-app_artifacts/feature_columns.json
-app_artifacts/model_metadata.json
-app_artifacts/feature_input_template.csv
-app_artifacts/example_feature_input.csv
-requirements.txt
-```
-
----
-
-## Important GitHub Notes
-
-The following files and folders are intentionally excluded from GitHub:
+The following are not uploaded to GitHub:
 
 ```text
 data/WESAD/
@@ -551,19 +350,15 @@ models/*.h5
 models/*.pt
 ```
 
-The final Streamlit deployment artifact is stored separately:
+The deployed app uses this model artifact:
 
 ```text
 app_artifacts/stress_model.joblib
 ```
 
-This file is included so that the deployed app can load the trained Gradient Boosting model.
-
 ---
 
-## Requirements
-
-Main packages used:
+## Technologies Used
 
 - Python
 - NumPy
@@ -575,33 +370,18 @@ Main packages used:
 - Jupyter Notebook
 - Streamlit
 
-For Streamlit deployment, the most important packages are:
-
-```text
-streamlit
-numpy
-pandas
-matplotlib
-scikit-learn
-joblib
-```
-
 ---
 
-## Main Skills Demonstrated
-
-This project demonstrates:
+## Skills Demonstrated
 
 - Physiological signal processing
 - Time-series window segmentation
-- Feature extraction
+- Statistical feature extraction
 - Classical machine learning
 - Deep learning for time-series classification
-- Subject-independent model evaluation
+- Subject-independent evaluation
 - Leave-One-Subject-Out cross-validation
-- Model comparison and result interpretation
-- ML model export for deployment
-- Streamlit dashboard development
+- Model deployment with Streamlit
 - GitHub project organization
 
 ---
@@ -614,41 +394,18 @@ The best-performing model was **Gradient Boosting**, achieving a mean LOSO macro
 
 The results show that handcrafted physiological features are effective for wearable stress classification when the dataset is small and subject-independent generalization is required.
 
-The Streamlit app demonstrates the final model through an interactive dashboard and batch prediction interface.
-
 ---
 
 ## Future Work
 
-Possible future improvements include:
+Possible future improvements:
 
-- Add wrist sensor signals such as BVP, wrist EDA, wrist temperature, and wrist acceleration
+- Add wrist sensor signals such as BVP, wrist EDA, wrist temperature, and acceleration
 - Add heart-rate variability features from ECG
-- Add EDA-specific features such as tonic and phasic components
-- Improve deep learning models using 1D ResNet or Temporal Convolutional Networks
-- Add hyperparameter tuning
-- Improve the Streamlit app with raw-signal upload support
-- Add automated feature extraction inside the app
-- Evaluate binary classification, such as stress vs non-stress
-- Compare subject-dependent and subject-independent evaluation settings
-
----
-
-## Project Status
-
-Completed:
-
-- Dataset exploration
-- Preprocessing and window segmentation
-- Statistical feature extraction
-- Classical machine learning model comparison
-- Raw-signal 1D CNN experiment
-- Improved CNN-GRU experiment
-- Feature-based neural network experiment
-- Leave-One-Subject-Out cross-validation
-- Final model export
-- Advanced Streamlit application
-- Streamlit Cloud deployment testing
+- Add EDA-specific tonic and phasic features
+- Improve deep learning with 1D ResNet or Temporal Convolutional Networks
+- Add automated feature extraction inside the Streamlit app
+- Evaluate binary classification: stress vs non-stress
 
 ---
 
