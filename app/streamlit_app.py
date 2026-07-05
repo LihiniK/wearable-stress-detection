@@ -1,5 +1,6 @@
 from pathlib import Path
 import pickle
+import joblib
 import json
 
 import numpy as np
@@ -26,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RESULTS_DIR = PROJECT_ROOT / "results"
 APP_ARTIFACTS_DIR = PROJECT_ROOT / "app_artifacts"
 
-MODEL_PATH = APP_ARTIFACTS_DIR / "stress_model.pkl"
+MODEL_PATH = APP_ARTIFACTS_DIR / "stress_model.joblib"
 FEATURE_COLUMNS_PATH = APP_ARTIFACTS_DIR / "feature_columns.json"
 MODEL_METADATA_PATH = APP_ARTIFACTS_DIR / "model_metadata.json"
 TEMPLATE_PATH = APP_ARTIFACTS_DIR / "feature_input_template.csv"
@@ -39,7 +40,7 @@ TEMPLATE_PATH = APP_ARTIFACTS_DIR / "feature_input_template.csv"
 def load_model():
     # Load trained model only once
     with open(MODEL_PATH, "rb") as file:
-        model = pickle.load(file)
+        model = joblib.load(file)
     return model
 
 
