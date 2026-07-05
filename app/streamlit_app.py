@@ -31,6 +31,7 @@ MODEL_PATH = APP_ARTIFACTS_DIR / "stress_model.joblib"
 FEATURE_COLUMNS_PATH = APP_ARTIFACTS_DIR / "feature_columns.json"
 MODEL_METADATA_PATH = APP_ARTIFACTS_DIR / "model_metadata.json"
 TEMPLATE_PATH = APP_ARTIFACTS_DIR / "feature_input_template.csv"
+EXAMPLE_INPUT_PATH = APP_ARTIFACTS_DIR / "example_feature_input.csv"
 
 
 # ------------------------------------------------------------
@@ -319,16 +320,36 @@ elif page == "Batch Prediction":
                     mime="text/csv"
                 )
 
+        if EXAMPLE_INPUT_PATH.exists():
+            with open(EXAMPLE_INPUT_PATH, "rb") as file:
+                st.download_button(
+                    label="Download Example Input CSV",
+                    data=file,
+                    file_name="example_feature_input.csv",
+                    mime="text/csv"
+                )
+
+
         uploaded_file = st.file_uploader(
             "Upload feature CSV file",
             type=["csv"]
         )
+
+
 
         if uploaded_file is not None:
             uploaded_df = pd.read_csv(uploaded_file)
 
             st.subheader("Uploaded Data Preview")
             st.dataframe(uploaded_df.head(), use_container_width=True)
+
+            # Stop if the uploaded CSV has no rows
+            if uploaded_df.shape[0] == 0:
+                st.error(
+                    "The uploaded CSV has no data rows. "
+                    "Please upload a CSV file with at least one row of feature values."
+                )
+                st.stop()
 
             missing_columns, extra_columns = validate_uploaded_features(
                 uploaded_df,
@@ -338,61 +359,76 @@ elif page == "Batch Prediction":
             if len(missing_columns) > 0:
                 st.error("The uploaded file is missing required feature columns.")
                 st.write(missing_columns)
+                st.stop()
+
+            if len(extra_columns) > 0:
+                st.info("Extra columns were found. They will be ignored during prediction.")
+
+            # Keep columns in the exact order used during training
+            X_input = uploaded_df[required_feature_columns].copy()
+
+            # Convert all feature values to numeric
+            X_input = X_input.apply(pd.to_numeric, errors="coerce")
+
+            # Fill missing values using training means from the fitted scaler
+            if hasattr(model, "named_steps") and "scaler" in model.named_steps:
+                scaler = model.named_steps["scaler"]
+                training_means = pd.Series(
+                    scaler.mean_,
+                    index=required_feature_columns
+                )
+                X_input = X_input.fillna(training_means)
             else:
-                if len(extra_columns) > 0:
-                    st.info(
-                        "Extra columns were found. They will be ignored during prediction."
-                    )
+                X_input = X_input.fillna(0)
 
-                # Keep columns in the exact order used during training
-                X_input = uploaded_df[required_feature_columns].copy()
+            # Final safety check
+            if X_input.isnull().sum().sum() > 0:
+                st.error("Some feature values are still missing or invalid after cleaning.")
+                st.stop()
 
-                # Fill missing values if any exist
-                X_input = X_input.fillna(X_input.mean())
+            # Predict classes
+            predictions = model.predict(X_input)
 
-                # Predict classes
-                predictions = model.predict(X_input)
+            result_df = uploaded_df.copy()
+            result_df["predicted_label"] = predictions
+            result_df["predicted_class"] = [
+                map_label_to_name(label) for label in predictions
+            ]
 
-                result_df = uploaded_df.copy()
-                result_df["predicted_label"] = predictions
-                result_df["predicted_class"] = [
-                    map_label_to_name(label) for label in predictions
-                ]
+            # Add prediction probabilities if supported
+            if hasattr(model, "predict_proba"):
+                probabilities = model.predict_proba(X_input)
 
-                # Add prediction probabilities if supported
-                if hasattr(model, "predict_proba"):
-                    probabilities = model.predict_proba(X_input)
+                for index, class_label in enumerate(model.classes_):
+                    class_name = map_label_to_name(class_label)
+                    result_df[f"probability_{class_name}"] = probabilities[:, index]
 
-                    for index, class_label in enumerate(model.classes_):
-                        class_name = map_label_to_name(class_label)
-                        result_df[f"probability_{class_name}"] = probabilities[:, index]
+            st.subheader("Prediction Results")
+            st.dataframe(result_df, use_container_width=True)
 
-                st.subheader("Prediction Results")
-                st.dataframe(result_df, use_container_width=True)
+            st.subheader("Predicted Class Distribution")
 
-                st.subheader("Predicted Class Distribution")
+            prediction_counts = result_df["predicted_class"].value_counts().reset_index()
+            prediction_counts.columns = ["class", "count"]
 
-                prediction_counts = result_df["predicted_class"].value_counts().reset_index()
-                prediction_counts.columns = ["class", "count"]
+            st.dataframe(prediction_counts, use_container_width=True)
 
-                st.dataframe(prediction_counts, use_container_width=True)
+            plot_bar_chart(
+                prediction_counts,
+                x_col="class",
+                y_col="count",
+                title="Predicted Class Distribution",
+                ylabel="Count"
+            )
 
-                plot_bar_chart(
-                    prediction_counts,
-                    x_col="class",
-                    y_col="count",
-                    title="Predicted Class Distribution",
-                    ylabel="Count"
-                )
+            csv_data = result_df.to_csv(index=False).encode("utf-8")
 
-                csv_data = result_df.to_csv(index=False).encode("utf-8")
-
-                st.download_button(
-                    label="Download Predictions as CSV",
-                    data=csv_data,
-                    file_name="stress_predictions.csv",
-                    mime="text/csv"
-                )
+            st.download_button(
+                label="Download Predictions as CSV",
+                data=csv_data,
+                file_name="stress_predictions.csv",
+                mime="text/csv"
+            )
 
 
 # ------------------------------------------------------------
