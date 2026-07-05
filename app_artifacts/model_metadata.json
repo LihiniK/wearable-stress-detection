@@ -1,0 +1,24 @@
+{
+    "model_name": "Gradient Boosting",
+    "project_name": "Wearable Stress Detection",
+    "dataset": "WESAD",
+    "signals_used": [
+        "ECG",
+        "EDA/GSR",
+        "Respiration",
+        "Temperature"
+    ],
+    "classes": {
+        "1": "Neutral / Baseline",
+        "2": "Stress",
+        "3": "Amusement"
+    },
+    "number_of_features": 68,
+    "number_of_windows": 2151,
+    "evaluation": {
+        "loso_mean_accuracy": 0.6871,
+        "loso_std_accuracy": 0.1638,
+        "loso_mean_macro_f1": 0.5769,
+        "loso_std_macro_f1": 0.1805
+    }
+}
