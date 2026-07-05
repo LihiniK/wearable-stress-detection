@@ -10,7 +10,29 @@ The goal is to classify physiological signal windows into three affective states
 - Stress
 - Amusement
 
-The project includes raw signal exploration, preprocessing, window segmentation, feature extraction, classical machine learning, raw-signal deep learning, feature-based deep learning, and Leave-One-Subject-Out cross-validation.
+The project includes raw signal exploration, preprocessing, window segmentation, feature extraction, classical machine learning, raw-signal deep learning, feature-based deep learning, Leave-One-Subject-Out cross-validation, and an interactive Streamlit application.
+
+---
+
+## Live Demo
+
+An interactive Streamlit application is included for project demonstration.
+
+Add your deployed app link here:
+
+```text
+https://wearable-stress-detection-v1.streamlit.app
+```
+
+The app provides:
+
+- Project overview
+- Model comparison dashboard
+- Leave-One-Subject-Out evaluation results
+- Batch prediction using uploaded feature CSV files
+- Prediction probability outputs
+- Downloadable prediction results
+- Example input CSV for testing
 
 ---
 
@@ -58,6 +80,8 @@ The main objectives of this project are:
 - Train feature-based neural networks
 - Evaluate models using subject-independent testing
 - Perform Leave-One-Subject-Out cross-validation
+- Export the final model for deployment
+- Build an interactive Streamlit application
 - Compare classical ML and deep learning approaches
 
 ---
@@ -167,6 +191,16 @@ This project compares both classical machine learning and deep learning models.
 - CNN-GRU using raw physiological signal windows
 - Feature-Based MLP using extracted physiological features
 
+### Final Deployment Model
+
+The final model used in the Streamlit application is:
+
+```text
+Gradient Boosting
+```
+
+This model was selected because it achieved the best overall subject-independent performance.
+
 ---
 
 ## Evaluation Strategy
@@ -267,14 +301,71 @@ Although the deep learning models improved from the initial 1D CNN to CNN-GRU an
 
 ---
 
+## Streamlit App
+
+An advanced Streamlit application is included in the `app/` folder.
+
+The app includes:
+
+- Overview page
+- Results dashboard
+- Model comparison visualization
+- LOSO evaluation summary
+- Batch prediction interface
+- Feature input template download
+- Example input CSV download
+- Prediction probability output
+- Downloadable prediction results
+- Model metadata page
+
+### App Files
+
+```text
+app/
+└── streamlit_app.py
+
+app_artifacts/
+├── stress_model.joblib
+├── feature_columns.json
+├── model_metadata.json
+├── feature_input_template.csv
+└── example_feature_input.csv
+```
+
+### Run the Streamlit App Locally
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+Before running the app, execute:
+
+```text
+notebooks/09_export_final_model_for_streamlit.ipynb
+```
+
+This notebook creates the required files inside the `app_artifacts/` folder.
+
+---
+
 ## Repository Structure
 
 ```text
-wearable_stress_detection/
+wearable-stress-detection/
 │
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
+│
+├── app/
+│   └── streamlit_app.py
+│
+├── app_artifacts/
+│   ├── stress_model.joblib
+│   ├── feature_columns.json
+│   ├── model_metadata.json
+│   ├── feature_input_template.csv
+│   └── example_feature_input.csv
 │
 ├── data/
 │   ├── README.md
@@ -289,7 +380,8 @@ wearable_stress_detection/
 │   ├── 05_deep_learning_models.ipynb
 │   ├── 06_improved_deep_learning_models.ipynb
 │   ├── 07_feature_based_neural_network.ipynb
-│   └── 08_leave_one_subject_out_evaluation.ipynb
+│   ├── 08_leave_one_subject_out_evaluation.ipynb
+│   └── 09_export_final_model_for_streamlit.ipynb
 │
 ├── results/
 │   ├── preprocessing_summary.csv
@@ -298,15 +390,13 @@ wearable_stress_detection/
 │   ├── dl_summary.csv
 │   ├── improved_dl_summary.csv
 │   ├── feature_mlp_summary.csv
+│   ├── all_model_comparison.csv
 │   ├── loso_model_summary.csv
 │   ├── loso_final_summary.csv
 │   └── figures and reports
 │
-├── models/
-│   └── trained model files       # Not uploaded to GitHub
-│
-└── app/
-    └── future Streamlit app
+└── models/
+    └── trained model files       # Not uploaded to GitHub
 ```
 
 ---
@@ -323,23 +413,22 @@ wearable_stress_detection/
 | `06_improved_deep_learning_models.ipynb` | Trains an improved CNN-GRU model |
 | `07_feature_based_neural_network.ipynb` | Trains a feature-based MLP neural network |
 | `08_leave_one_subject_out_evaluation.ipynb` | Performs LOSO cross-validation |
+| `09_export_final_model_for_streamlit.ipynb` | Exports final Gradient Boosting model and app artifacts |
 
 ---
 
 ## How to Run
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/wearable_stress_detection.git
-cd wearable_stress_detection
+git clone https://github.com/LihiniK/wearable-stress-detection.git
+cd wearable-stress-detection
 ```
-
-Replace `YOUR_USERNAME` with your GitHub username.
 
 ---
 
-### 2. Create a virtual environment
+### 2. Create a Virtual Environment
 
 On Windows PowerShell:
 
@@ -357,7 +446,7 @@ source venv/bin/activate
 
 ---
 
-### 3. Install requirements
+### 3. Install Requirements
 
 ```bash
 pip install -r requirements.txt
@@ -365,7 +454,7 @@ pip install -r requirements.txt
 
 ---
 
-### 4. Download the dataset
+### 4. Download the Dataset
 
 Download the WESAD dataset manually from the official source.
 
@@ -386,7 +475,7 @@ data/WESAD/S4/S4.pkl
 
 ---
 
-### 5. Run notebooks in order
+### 5. Run Notebooks in Order
 
 Run the notebooks in this order:
 
@@ -399,9 +488,53 @@ Run the notebooks in this order:
 06_improved_deep_learning_models.ipynb
 07_feature_based_neural_network.ipynb
 08_leave_one_subject_out_evaluation.ipynb
+09_export_final_model_for_streamlit.ipynb
 ```
 
-The processed data files and trained models are created locally and are not uploaded to GitHub.
+The processed data files and trained development models are created locally and are not uploaded to GitHub.
+
+---
+
+### 6. Run the Streamlit App
+
+After running Notebook 09, start the app:
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+The app will open in a browser at:
+
+```text
+http://localhost:8501
+```
+
+---
+
+## Streamlit Deployment Notes
+
+This app can be deployed using Streamlit Community Cloud.
+
+Deployment settings:
+
+| Setting | Value |
+|---|---|
+| Repository | `LihiniK/wearable-stress-detection` |
+| Branch | `main` |
+| Main file path | `app/streamlit_app.py` |
+| Recommended Python version | `3.10` or `3.11` |
+
+The following files must be available in GitHub for deployment:
+
+```text
+app/streamlit_app.py
+app_artifacts/stress_model.joblib
+app_artifacts/feature_columns.json
+app_artifacts/model_metadata.json
+app_artifacts/feature_input_template.csv
+app_artifacts/example_feature_input.csv
+requirements.txt
+```
 
 ---
 
@@ -418,19 +551,40 @@ models/*.h5
 models/*.pt
 ```
 
-This is because the dataset and trained model files can be large.
+The final Streamlit deployment artifact is stored separately:
+
+```text
+app_artifacts/stress_model.joblib
+```
+
+This file is included so that the deployed app can load the trained Gradient Boosting model.
 
 ---
 
-## Technologies Used
+## Requirements
+
+Main packages used:
 
 - Python
 - NumPy
 - Pandas
 - Matplotlib
 - Scikit-learn
+- Joblib
 - PyTorch
 - Jupyter Notebook
+- Streamlit
+
+For Streamlit deployment, the most important packages are:
+
+```text
+streamlit
+numpy
+pandas
+matplotlib
+scikit-learn
+joblib
+```
 
 ---
 
@@ -446,6 +600,8 @@ This project demonstrates:
 - Subject-independent model evaluation
 - Leave-One-Subject-Out cross-validation
 - Model comparison and result interpretation
+- ML model export for deployment
+- Streamlit dashboard development
 - GitHub project organization
 
 ---
@@ -458,6 +614,8 @@ The best-performing model was **Gradient Boosting**, achieving a mean LOSO macro
 
 The results show that handcrafted physiological features are effective for wearable stress classification when the dataset is small and subject-independent generalization is required.
 
+The Streamlit app demonstrates the final model through an interactive dashboard and batch prediction interface.
+
 ---
 
 ## Future Work
@@ -469,7 +627,8 @@ Possible future improvements include:
 - Add EDA-specific features such as tonic and phasic components
 - Improve deep learning models using 1D ResNet or Temporal Convolutional Networks
 - Add hyperparameter tuning
-- Build a Streamlit demo app
+- Improve the Streamlit app with raw-signal upload support
+- Add automated feature extraction inside the app
 - Evaluate binary classification, such as stress vs non-stress
 - Compare subject-dependent and subject-independent evaluation settings
 
@@ -487,6 +646,9 @@ Completed:
 - Improved CNN-GRU experiment
 - Feature-based neural network experiment
 - Leave-One-Subject-Out cross-validation
+- Final model export
+- Advanced Streamlit application
+- Streamlit Cloud deployment testing
 
 ---
 
