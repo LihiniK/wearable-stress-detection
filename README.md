@@ -16,6 +16,8 @@ The project includes signal preprocessing, window segmentation, feature extracti
 
 ## Live Demo
 
+An interactive Streamlit application is included for project demonstration.
+
 [Open the Streamlit App](https://wearable-stress-detection-v1.streamlit.app)
 
 The app includes:
